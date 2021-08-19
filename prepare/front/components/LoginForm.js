@@ -1,8 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { Form, Input, Button } from "antd";
 import Link from "next/link";
 import styled from "styled-components";
 import useinput from "../hooks/useinput";
+import { useDispatch } from "react-redux";
+import { loginAction } from "../reducers";
 
 const ButtonWrapper = styled.div`
     margin-top: 10px;
@@ -12,7 +14,8 @@ const FormWrapper = styled(Form)`
     padding: 30px;
 `;
 
-const LoginForm = ({ setIsLoggedIn }) => {
+const LoginForm = () => {
+    const dispatch = useDispatch();
     const [id, onChangeId] = useinput('');
     const [password, onChangePassword] = useinput('');
     // const [id, setId] = useState('');
@@ -29,7 +32,8 @@ const LoginForm = ({ setIsLoggedIn }) => {
     const onSubmitForm = useCallback(() => {
         // antd에서는 preventDefault가 이미 적용되어있어서 안해줘도 됨
         console.log(id, password);
-        setIsLoggedIn(true);
+        dispatch(loginAction({ id, password }));
+        // setIsLoggedIn(true);
     }, [id, password]);
 
     return (
