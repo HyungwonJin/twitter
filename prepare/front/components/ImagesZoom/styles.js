@@ -44,7 +44,7 @@ export const Indicator = styled.div`
     text-align: center;
 
     & > div {
-        width: 75;
+        width: 75px;
         height: 30px;
         line-height: 30px;
         border-radius: 15px;
