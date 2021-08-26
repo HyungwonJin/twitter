@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import React, { useState, useCallback } from 'react'
 import PropTypes from 'prop-types';
 
@@ -8,7 +9,7 @@ import ImageZoom from './ImagesZoom';
 const PostImages = ({ images }) => {
     const [showImageZoom, setShowImagesZoom] = useState(false);
 
-    const onZoom = useCallback(() => { //zoom 하기
+    const onZoom = useCallback(() => { // zoom 하기
         setShowImagesZoom(true);
     }, []);
 

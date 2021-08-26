@@ -1,4 +1,6 @@
-import { useCallback, useState } from 'react';
+/* eslint-disable consistent-return */
+import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Head from 'next/head';
 import { Form, Input, Checkbox, Button } from "antd";
 import styled from 'styled-components';
@@ -6,7 +8,6 @@ import styled from 'styled-components';
 import AppLayout from "../components/AppLayout";
 import useinput from '../hooks/useinput';
 import { SIGN_UP_REQUEST } from '../reducers/user';
-import { useDispatch, useSelector } from 'react-redux';
 
 const ErrorMessage = styled.div`
     color: red;
@@ -38,20 +39,19 @@ const SignUp = () => {
         [],
     )
 
-    const onSubmit = useCallback(
-        () => {
-            if (password !== passwordCheck) {
-                return setPasswordError(true);
-            }
-            if (!term) {
-                return setTermError(true);
-            }
-            console.log(email, nickname, password);
-            dispatchEvent({
-                type: SIGN_UP_REQUEST,
-                data: { email, password, nickname },
-            })
-        },
+    const onSubmit = useCallback(() => {
+        if (password !== passwordCheck) {
+            return setPasswordError(true);
+        }
+        if (!term) {
+            return setTermError(true);
+        }
+        console.log(email, nickname, password);
+        dispatchEvent({
+            type: SIGN_UP_REQUEST,
+            data: { email, password, nickname },
+        })
+    },
         [password, passwordCheck, term],
     )
 
