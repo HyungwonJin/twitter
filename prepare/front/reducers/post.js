@@ -1,4 +1,5 @@
 import shortId from 'shortid';
+import produce from 'immer';
 
 export const initialState = {
     mainPosts: [{
@@ -9,28 +10,40 @@ export const initialState = {
         },
         content: '첫번째 게시글 #해시태그 #익스프레스',
         Images: [{
+            id: shortId.generate(),
             src: "https://images.unsplash.com/photo-1629287120817-458e67b9f641?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2466&q=80"
         }, {
+            id: shortId.generate(),
             src: "https://images.unsplash.com/photo-1466078415375-6d055d48434b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2700&q=80"
         }, {
+            id: shortId.generate(),
             src: "https://images.unsplash.com/photo-1628020681459-36f808315107?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2700&q=80"
         }],
         Comments: [{
+            id: shortId.generate(),
             User: {
+                id: shortId.generate(),
                 nickname: 'nero',
             },
             content: '보기 좋습니다.',
         }, {
+            id: shortId.generate(),
             User: {
+                id: shortId.generate(),
                 nickname: 'Pikachu',
             },
             content: "아름답네요."
         }]
     }],
     imagePaths: [],
+
     addPostLoading: false,
     addPostDone: false,
     addPostError: null,
+
+    removePostLoading: false,
+    removePostDone: false,
+    removePostError: null,
 
     addCommentLoading: false,
     addCommentDone: false,
@@ -40,6 +53,10 @@ export const initialState = {
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
+
+export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
+export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
+export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 
 export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
@@ -56,8 +73,8 @@ export const addComment = (data) => ({
 })
 
 const dummyPost = (data) => ({
-    id: shortId.generate(),
-    content: data,
+    id: data.id,
+    content: data.content,
     User: {
         id: 1,
         nickname: 'Doraemon',
