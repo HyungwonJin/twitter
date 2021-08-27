@@ -7,9 +7,13 @@ export const initialState = {
     logOutDone: false,
     logOutError: null,
 
-    signUpLoading: false,
+    signUpLoading: false, // 회원가입 시도 중
     signUpDone: false,
     signUpError: null,
+
+    changeNicknameLoading: false, // 닉네임 변경 시도 중
+    changeNicknameDone: false,
+    changeNicknameError: null,
 
     me: null,
     signUpData: {},
@@ -27,6 +31,10 @@ export const LOG_OUT_FAILURE = 'LOG_OUT_FAILURE';
 export const SIGN_UP_REQUEST = 'SIGN_UP_REQUEST';
 export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
 export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE';
+
+export const CHANGE_NICKNAME_REQUEST = 'CHANGE_NICKNAME_REQUEST';
+export const CHANGE_NICKNAME_SUCCESS = 'CHANGE_NICKNAME_SUCCESS';
+export const CHANGE_NICKNAME_FAILURE = 'CHANGE_NICKNAME_FAILURE';
 
 export const FOLLOW_REQUEST = 'FOLLOW_REQUEST';
 export const FOLLOW_SUCCESS = 'FOLLOW_SUCCESS';
@@ -121,6 +129,29 @@ const reducer = (state = initialState, action) => {
             };
 
         case SIGN_UP_FAILURE:
+            return {
+                ...state,
+                signUpLoading: false,
+                signUpError: action.error,
+            };
+
+        case CHANGE_NICKNAME_REQUEST:
+            return {
+                ...state,
+                signUpLoading: true,
+                signUpDone: false,
+                signUpError: null,
+            };
+
+        case CHANGE_NICKNAME_SUCCESS:
+            return {
+                ...state,
+                signUpLoading: false,
+                signUpDone: false,
+                me: null,
+            };
+
+        case CHANGE_NICKNAME_FAILURE:
             return {
                 ...state,
                 signUpLoading: false,

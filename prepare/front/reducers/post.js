@@ -29,6 +29,10 @@ export const initialState = {
     addPostLoading: false,
     addPostDone: false,
     addPostError: null,
+
+    addCommentLoading: false,
+    addCommentDone: false,
+    addCommentError: null,
 }
 
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
@@ -49,16 +53,16 @@ export const addComment = (data) => ({
     data,
 })
 
-const dummyPost = {
+const dummyPost = (data) => ({
     id: 2,
-    content: '더미데이터 입니다.',
+    content: data,
     User: {
         id: 1,
         nickname: 'Doraemon',
     },
     Images: [],
     Comments: []
-}
+})
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -73,7 +77,7 @@ const reducer = (state = initialState, action) => {
         case ADD_POST_SUCCESS:
             return {
                 ...state,
-                mainPosts: [dummyPost, ...state.mainPosts],
+                mainPosts: [dummyPost(action.data), ...state.mainPosts],
                 // 추가 되는 게시물을 앞에 입력해야 최상단에 위치함
                 addPostLoading: false,
                 addPostDone: true,
