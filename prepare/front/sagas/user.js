@@ -4,9 +4,49 @@ import {
     LOG_IN_FAILURE, LOG_IN_SUCCESS, LOG_IN_REQUEST,
     LOG_OUT_FAILURE, LOG_OUT_SUCCESS, LOG_OUT_REQUEST,
     SIGN_UP_FAILURE, SIGN_UP_SUCCESS, SIGN_UP_REQUEST,
+    FOLLOW_REQUEST, FOLLOW_SUCCESS, FOLLOW_FAILURE,
+    UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE,
 } from "../reducers/user";
 
-//function 제네레이터 아님
+// function 제네레이터 아님
+function followAPI(data) {
+    return axios.post('/api/follow', data);
+}
+
+function* follow(action) {
+    try {
+        yield delay(1000);
+        yield put({
+            type: FOLLOW_SUCCESS,
+            data: action.data,
+        })
+    } catch (err) {
+        yield put({
+            type: FOLLOW_FAILURE,
+            error: err.response.data,
+        })
+    }
+}
+
+function unfollowAPI(data) {
+    return axios.post('/api/unfollow', data);
+}
+
+function* unfollow(action) {
+    try {
+        yield delay(1000);
+        yield put({
+            type: UNFOLLOW_SUCCESS,
+            data: action.data,
+        })
+    } catch (err) {
+        yield put({
+            type: UNFOLLOW_FAILURE,
+            error: err.response.data,
+        })
+    }
+}
+
 function logInAPI(data) { // (3) call을 해서 받은 logInAPI(action.data)임
     return axios.post('/api/login', data);
 }
@@ -67,8 +107,16 @@ function* signUp() {
     }
 }
 
+function* watchFollow() {
+    yield takeLatest(FOLLOW_REQUEST, follow);
+}
+
+function* watchUnFollow() {
+    yield takeLatest(UNFOLLOW_REQUEST, unfollow);
+}
+
 function* watchLogIn() {
-    yield takeLatest(LOG_IN_REQUEST, logIn); //LOG_IN_REQUEST 이라는 명령이 시행될 때까지 기다림
+    yield takeLatest(LOG_IN_REQUEST, logIn); // LOG_IN_REQUEST 이라는 명령이 시행될 때까지 기다림
 }
 
 function* watchLogOut() {
@@ -82,6 +130,8 @@ function* watchSignUp() {
 
 export default function* userSaga() {
     yield all([
+        fork(watchFollow),
+        fork(watchUnFollow),
         fork(watchLogIn),
         fork(watchLogOut),
         fork(watchSignUp),

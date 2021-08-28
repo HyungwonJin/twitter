@@ -32,7 +32,7 @@ const Home = () => {
         }
         window.addEventListener('scroll', onScroll);
         return () => {
-            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('scroll', onScroll); // removeEventListener해주지 않으면 메모리에 쌓여서 없애주어여함
         }
     }, [hasMorePost, loadPostLoading])
 
