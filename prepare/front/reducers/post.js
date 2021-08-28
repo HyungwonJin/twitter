@@ -3,40 +3,14 @@ import produce from 'immer';
 import faker from 'faker';
 
 export const initialState = {
-    mainPosts: [{
-        id: 1,
-        User: {
-            id: 1,
-            nickname: 'Doraemon',
-        },
-        content: '첫번째 게시글 #해시태그 #익스프레스',
-        Images: [{
-            id: shortId.generate(),
-            src: "https://images.unsplash.com/photo-1629287120817-458e67b9f641?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2466&q=80"
-        }, {
-            id: shortId.generate(),
-            src: "https://images.unsplash.com/photo-1466078415375-6d055d48434b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2700&q=80"
-        }, {
-            id: shortId.generate(),
-            src: "https://images.unsplash.com/photo-1628020681459-36f808315107?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2700&q=80"
-        }],
-        Comments: [{
-            id: shortId.generate(),
-            User: {
-                id: shortId.generate(),
-                nickname: 'nero',
-            },
-            content: '보기 좋습니다.',
-        }, {
-            id: shortId.generate(),
-            User: {
-                id: shortId.generate(),
-                nickname: 'Pikachu',
-            },
-            content: "아름답네요."
-        }]
-    }],
+    mainPosts: [],
     imagePaths: [],
+
+    hasMorePost: true,
+
+    loadPostLoading: false,
+    loadPostDone: false,
+    loadPostError: null,
 
     addPostLoading: false,
     addPostDone: false,
@@ -51,26 +25,28 @@ export const initialState = {
     addCommentError: null,
 }
 
-initialState.mainPosts = initialState.mainPosts.concat(
-    Array(20).fill().map(() => ({
+export const generateDummyPost = (number) => Array(number).fill().map(() => ({
+    id: shortId.generate(),
+    User: {
         id: shortId.generate(),
+        nickname: faker.name.findName(),
+    },
+    content: faker.lorem.paragraph(),
+    Images: [{
+        src: faker.image.image(),
+    }],
+    Comments: [{
         User: {
             id: shortId.generate(),
             nickname: faker.name.findName(),
         },
-        content: faker.lorem.paragraph(),
-        Images: [{
-            src: faker.image.image(),
-        }],
-        Comments: [{
-            User: {
-                id: shortId.generate(),
-                nickname: faker.name.findName(),
-            },
-            content: faker.lorem.sentence(),
-        }],
-    })),
-)
+        content: faker.lorem.sentence(),
+    }],
+}));
+
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
@@ -117,6 +93,24 @@ const dummyComment = (data) => ({
 const reducer = (state = initialState, action) => {
     return produce(state, (draft) => { // state가 이름이 draft로 바뀜
         switch (action.type) {
+            case LOAD_POST_REQUEST:
+                draft.loadPostLoading = true;
+                draft.loadPostDone = false;
+                draft.loadPostError = null;
+                break;
+
+            case LOAD_POST_SUCCESS:
+                draft.loadPostLoading = false;
+                draft.loadPostDone = true;
+                draft.mainPosts = action.data.concat(draft.mainPosts); // mainPosts에 추가되는 게시물을 이어붙임
+                draft.hasMorePost = draft.mainPosts.length < 50; // 덧붙인 길이가 50을 넘는가?
+                break;
+
+            case LOAD_POST_FAILURE:
+                draft.loadPostLoading = false;
+                draft.loadPostError = action.error;
+                break;
+
             case ADD_POST_REQUEST:
                 draft.addPostLoading = true;
                 draft.addPostDone = false;
