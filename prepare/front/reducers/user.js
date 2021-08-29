@@ -90,6 +90,7 @@ const reducer = (state = initialState, action) => {
                 draft.followLoading = false;
                 draft.followDone = true;
                 draft.me.Followings.push({ id: action.data });
+                // 팔로우 성공하면 Followings에 id를 집어 넣음
                 break;
 
             case FOLLOW_FAILURE:
@@ -107,6 +108,7 @@ const reducer = (state = initialState, action) => {
                 draft.unfollowLoading = false;
                 draft.unfollowDone = true;
                 draft.me.Followings = draft.me.Followings.filter((v) => v.id !== action.data);
+                // 언팔하면 목록에서 언팔 한 유저만 빼고 배열 생성
                 break;
 
             case UNFOLLOW_FAILURE:
