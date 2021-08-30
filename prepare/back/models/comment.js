@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
         // PostId: 3,
     }, {
         charset: 'utf8mb4', // mb4는 이모티콘
-        collate: 'utf8bm4_general_ci', // 한글 저장
+        collate: 'utf8mb4_general_ci', // 한글 저장
     });
     Comment.associate = (db) => {
-        db.Comment.belogsTo(db.User);
-        db.Comment.belogsTo(db.Post);
+        db.Comment.belongsTo(db.User);
+        db.Comment.belongsTo(db.Post);
     };
     return Comment;
 }
