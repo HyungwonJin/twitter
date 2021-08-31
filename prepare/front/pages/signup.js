@@ -1,7 +1,8 @@
 /* eslint-disable consistent-return */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Head from 'next/head';
+import Router from 'next/router';
 import { Form, Input, Checkbox, Button } from "antd";
 import styled from 'styled-components';
 
@@ -15,7 +16,19 @@ const ErrorMessage = styled.div`
 
 const SignUp = () => {
     const dispatch = useDispatch();
-    const { signUpLoading } = useSelector((state) => state.user);
+    const { signUpLoading, signUpDone, signUpError } = useSelector((state) => state.user);
+
+    useEffect(() => {
+        if (signUpDone) {
+            Router.push('/');
+        }
+    }, [signUpDone]);
+
+    useEffect(() => {
+        if (signUpError) {
+            alert(signUpError);
+        }
+    }, [signUpError])
 
     const [email, onChangeEmail] = useinput('')
     const [nickname, onChangeNickname] = useinput('');
