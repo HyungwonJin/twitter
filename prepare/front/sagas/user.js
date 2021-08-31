@@ -48,16 +48,15 @@ function* unfollow(action) {
 }
 
 function logInAPI(data) { // (3) call을 해서 받은 logInAPI(action.data)임
-    return axios.post('/api/login', data);
+    return axios.post('/user/login', data);
 }
 
 function* logIn(action) { // (1)watchLogIn함수에서 받은 action을 매개변수로 받음
     try {
-        // const result = yield call(logInAPI, action.data); // (2)action으로 받은 로그인 data가 들어있음
-        yield delay(1000);
+        const result = yield call(logInAPI, action.data); // (2)action으로 받은 로그인 data가 들어있음
         yield put({
             type: LOG_IN_SUCCESS,
-            data: action.data,
+            data: result.data,
             // data: result.data,
         })
     } catch (err) {
@@ -69,7 +68,7 @@ function* logIn(action) { // (1)watchLogIn함수에서 받은 action을 매개�
 }
 
 function logOutAPI() { // 제네레이터 아님
-    return axios.post('/api/logout');
+    return axios.post('/user/logout');
 }
 
 function* logOut() {
@@ -89,7 +88,7 @@ function* logOut() {
 }
 
 function signUpAPI(data) { // 제네레이터 아님
-    return axios.post('http://localhost:3065/user', data);
+    return axios.post('/user', data);
 }
 
 function* signUp(action) {
