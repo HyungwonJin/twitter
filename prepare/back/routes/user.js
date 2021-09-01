@@ -3,10 +3,11 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 
 const { User, Post } = require('../models');
+const { isLoggedIn, isNotLoggedIn } = require("../routes/middlewares");
 
 const router = express.Router();
 
-router.post('/login', (req, res, next) => { // 미들웨어 확장
+router.post('/login', isNotLoggedIn, (req, res, next) => { // 미들웨어 확장
     passport.authenticate('local', (err, user, info) => {
         if (err) {
             console.error(err);
@@ -40,7 +41,7 @@ router.post('/login', (req, res, next) => { // 미들웨어 확장
     })(req, res, next);
 });
 
-router.post('/', async (req, res, next) => { // POST /user/
+router.post('/', isNotLoggedIn, async (req, res, next) => { // POST /user/
     const { email, nickname, password } = req.body;
     try {
         const exUser = await User.findOne({
@@ -65,7 +66,7 @@ router.post('/', async (req, res, next) => { // POST /user/
     }
 });
 
-router.post('/user/logout', (req, res, next) => {
+router.post('/logout', isLoggedIn, (req, res, next) => {
     req.logout();
     req.session.destroy();
     res.send('ok');
