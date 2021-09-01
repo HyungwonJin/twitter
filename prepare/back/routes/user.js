@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 
-const { User } = require('../models');
+const { User, Post } = require('../models');
 
 const router = express.Router();
 
@@ -20,7 +20,22 @@ router.post('/login', (req, res, next) => { // 미들웨어 확장
                 console.error(loginErr);
                 return next(loginErr);
             }
-            return res.json(user);
+            const fullUserWithoutPassword = await User.findOne({
+                where: { id: user.id },
+                attributes: {
+                    exclude: ['password']
+                },
+                include: [{
+                    model: Post,
+                }, {
+                    model: User,
+                    as: 'Followings',
+                }, {
+                    model: User,
+                    as: 'Followers',
+                }]
+            })
+            return res.status(200).json(fullUserWithoutPassword); // action.data로 넘어감 reducer의 me가 됨
         })
     })(req, res, next);
 });

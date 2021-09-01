@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Form, Input, Button } from "antd";
 import Link from "next/link";
 import styled from "styled-components";
@@ -17,7 +17,7 @@ const FormWrapper = styled(Form)`
 
 const LoginForm = () => {
     const dispatch = useDispatch();
-    const { logInLoading } = useSelector((state) => state.user);
+    const { logInLoading, logInError } = useSelector((state) => state.user);
     const [email, onChangeEmail] = useinput('');
     const [password, onChangePassword] = useinput('');
     // const [id, setId] = useState('');
@@ -30,6 +30,12 @@ const LoginForm = () => {
     // const onChangePassword = useCallback((e) => {
     //     setPassword(e.target.value);
     // }, []);
+
+    useEffect(() => {
+        if (logInError) {
+            alert(logInError);
+        }
+    }, [logInError])
 
     const onSubmitForm = useCallback(() => {
         // antd에서는 preventDefault가 이미 적용되어있어서 안해줘도 됨
