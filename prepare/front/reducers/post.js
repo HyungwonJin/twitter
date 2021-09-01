@@ -1,6 +1,5 @@
 import shortId from 'shortid';
 import produce from 'immer';
-import faker from 'faker';
 
 export const initialState = {
     mainPosts: [],
@@ -24,25 +23,6 @@ export const initialState = {
     addCommentDone: false,
     addCommentError: null,
 }
-
-export const generateDummyPost = (number) => Array(number).fill().map(() => ({
-    id: shortId.generate(),
-    User: {
-        id: shortId.generate(),
-        nickname: faker.name.findName(),
-    },
-    content: faker.lorem.paragraph(),
-    Images: [{
-        src: faker.image.image(),
-    }],
-    Comments: [{
-        User: {
-            id: shortId.generate(),
-            nickname: faker.name.findName(),
-        },
-        content: faker.lorem.sentence(),
-    }],
-}));
 
 export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
 export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
@@ -70,25 +50,6 @@ export const addComment = (data) => ({
     data,
 })
 
-const dummyPost = (data) => ({
-    id: data.id,
-    content: data.content,
-    User: {
-        id: 1,
-        nickname: 'Doraemon',
-    },
-    Images: [],
-    Comments: []
-})
-
-const dummyComment = (data) => ({
-    id: shortId.generate(),
-    content: data,
-    User: {
-        id: 1,
-        nickname: 'Doraemon',
-    },
-})
 // reducer란 이전 상태를 액션을 통해 다음 상태로 만들어내는 함수(불변성은 지키면서)
 const reducer = (state = initialState, action) => {
     return produce(state, (draft) => { // state가 이름이 draft로 바뀜
@@ -126,7 +87,7 @@ const reducer = (state = initialState, action) => {
             case ADD_POST_SUCCESS:
                 draft.addPostLoading = false;
                 draft.addPostDone = true;
-                draft.mainPosts.unshift(dummyPost(action.data));
+                draft.mainPosts.unshift(action.data);
                 // draft.mainPosts = [dummyPost(action.data), ...state.mainPosts];
                 break;
 
@@ -166,8 +127,8 @@ const reducer = (state = initialState, action) => {
                 break;
 
             case ADD_COMMENT_SUCCESS: {
-                const post = draft.mainPosts.find((v) => v.id === action.data.postId);// 원하는 post를 찾아서
-                post.Comments.unshift(dummyComment(action.data.content)); // 제일 앞에 게시글을 추가
+                const post = draft.mainPosts.find((v) => v.id === action.data.PostId);// 원하는 post를 찾아서
+                post.Comments.unshift(action.data); // 제일 앞에 게시글을 추가
                 draft.addCommentLoading = false;
                 draft.addCommentDone = true;
                 break;
