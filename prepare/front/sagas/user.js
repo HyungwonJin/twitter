@@ -6,9 +6,29 @@ import {
     SIGN_UP_FAILURE, SIGN_UP_SUCCESS, SIGN_UP_REQUEST,
     FOLLOW_REQUEST, FOLLOW_SUCCESS, FOLLOW_FAILURE,
     UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE,
+    LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOAD_MY_INFO_FAILURE,
 } from "../reducers/user";
 
 // function 제네레이터 아님
+function loadUserAPI() {
+    return axios.get('/user');
+}
+
+function* loadUser(action) {
+    try {
+        const result = yield call(loadUserAPI, action.data);
+        yield put({
+            type: LOAD_MY_INFO_SUCCESS,
+            data: result.data,
+        })
+    } catch (err) {
+        yield put({
+            type: LOAD_MY_INFO_FAILURE,
+            error: err.response.data,
+        })
+    }
+}
+
 function followAPI(data) {
     return axios.post('/api/follow', data);
 }
@@ -104,6 +124,10 @@ function* signUp(action) {
     }
 }
 
+function* watchLoadUser() {
+    yield takeLatest(LOAD_MY_INFO_REQUEST, loadUser);
+}
+
 function* watchFollow() {
     yield takeLatest(FOLLOW_REQUEST, follow);
 }
@@ -127,6 +151,7 @@ function* watchSignUp() {
 
 export default function* userSaga() {
     yield all([
+        fork(watchLoadUser),
         fork(watchFollow),
         fork(watchUnFollow),
         fork(watchLogIn),
