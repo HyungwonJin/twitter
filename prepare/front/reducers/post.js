@@ -6,6 +6,14 @@ export const initialState = {
 
     hasMorePost: true,
 
+    unlikePostLoading: false,
+    unlikePostDone: false,
+    unlikePostError: null,
+
+    likePostLoading: false,
+    likePostDone: false,
+    likePostError: null,
+
     loadPostLoading: false,
     loadPostDone: false,
     loadPostError: null,
@@ -23,6 +31,14 @@ export const initialState = {
     addCommentError: null,
 }
 
+
+export const UNLIKE_POST_REQUEST = 'UNLIKE_POST_REQUEST';
+export const UNLIKE_POST_SUCCESS = 'UNLIKE_POST_SUCCESS';
+export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE';
+
+export const LIKE_POST_REQUEST = 'LIKE_POST_REQUEST';
+export const LIKE_POST_SUCCESS = 'LIKE_POST_SUCCESS';
+export const LIKE_POST_FAILURE = 'LIKE_POST_FAILURE';
 
 export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
 export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
@@ -54,6 +70,42 @@ export const addComment = (data) => ({
 const reducer = (state = initialState, action) => {
     return produce(state, (draft) => { // state가 이름이 draft로 바뀜
         switch (action.type) {
+            case UNLIKE_POST_REQUEST:
+                draft.loadPostLoading = true;
+                draft.loadPostDone = false;
+                draft.loadPostError = null;
+                break;
+
+            case UNLIKE_POST_SUCCESS: {
+                const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+                post.Likers = post.Likers.filter((v) => v.id !== action.data.UserId);
+                draft.loadPostLoading = false;
+                draft.loadPostDone = true;
+                break;
+            }
+            case UNLIKE_POST_FAILURE:
+                draft.loadPostLoading = false;
+                draft.loadPostError = action.error;
+                break;
+
+            case LIKE_POST_REQUEST:
+                draft.loadPostLoading = true;
+                draft.loadPostDone = false;
+                draft.loadPostError = null;
+                break;
+
+            case LIKE_POST_SUCCESS: {
+                const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+                post.Likers.push({ id: action.data.UserId });
+                draft.loadPostLoading = false;
+                draft.loadPostDone = true;
+                break;
+            }
+            case LIKE_POST_FAILURE:
+                draft.loadPostLoading = false;
+                draft.loadPostError = action.error;
+                break;
+
             case LOAD_POST_REQUEST:
                 draft.loadPostLoading = true;
                 draft.loadPostDone = false;
