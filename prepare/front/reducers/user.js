@@ -158,7 +158,7 @@ const reducer = (state = initialState, action) => {
 
             case LOG_OUT_SUCCESS:
                 draft.logOutLoading = false;
-                draft.logOutDone = false;
+                draft.logOutDone = true;
                 draft.me = null;
                 break;
 
@@ -175,7 +175,7 @@ const reducer = (state = initialState, action) => {
 
             case SIGN_UP_SUCCESS:
                 draft.signUpLoading = false;
-                draft.signUpDone = false;
+                draft.signUpDone = true;
                 draft.me = null;
                 break;
 
@@ -191,8 +191,9 @@ const reducer = (state = initialState, action) => {
                 break;
 
             case CHANGE_NICKNAME_SUCCESS:
+                draft.me.nickname = action.data.nickname;
                 draft.changeNicknameLoading = false;
-                draft.changeNicknameDone = false;
+                draft.changeNicknameDone = true;
                 draft.me = null;
                 break;
 

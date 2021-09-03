@@ -109,16 +109,15 @@ function* loadPost(action) {
 }
 
 function removePostAPI(data) { // 제네레이터 아님
-    return axios.delete('/api/post', data);
+    return axios.delete(`/post/${data}`);
 }
 
 function* removePost(action) {
     try {
-        // const result = yield call(removePostAPI, action.data);
-        yield delay(1000);
+        const result = yield call(removePostAPI, action.data);
         yield put({ // post reducer 조작
             type: REMOVE_POST_SUCCESS,
-            data: action.data, // action.data에 어떤 게시물을 지웠는지 id가 들어있음
+            data: result.data, // action.data에 어떤 게시물을 지웠는지 id가 들어있음
         });
         // 한번에 user와 post를 조작할 수 없으므로 action을 두가지로 나눠서 진행한다.
         yield put({ // user reducer 조작 
