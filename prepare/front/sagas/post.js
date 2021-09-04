@@ -1,4 +1,4 @@
-import { all, call, fork, takeLatest, delay, put, throttle } from "redux-saga/effects";
+import { all, call, fork, takeLatest, put, throttle } from "redux-saga/effects";
 import axios from 'axios';
 
 import {
@@ -25,14 +25,16 @@ import {
     UNLIKE_POST_REQUEST,
     UNLIKE_POST_SUCCESS,
     UNLIKE_POST_FAILURE,
+
     UPLOAD_IMAGES_REQUEST,
     UPLOAD_IMAGES_SUCCESS,
     UPLOAD_IMAGES_FAILURE,
 } from '../reducers/post';
+
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
 function uploadImagesAPI(data) { // 제네레이터 아님
-    return axios.post(`/post/images`, data);
+    return axios.post('/post/images', data);
 }
 
 function* uploadImages(action) {
@@ -43,10 +45,11 @@ function* uploadImages(action) {
             data: result.data,
         });
     } catch (err) {
+        console.error(err);
         yield put({
             type: UPLOAD_IMAGES_FAILURE,
-            data: err.response.data,
-        })
+            error: err.response.data,
+        });
     }
 }
 
