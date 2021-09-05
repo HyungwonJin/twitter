@@ -143,7 +143,7 @@ function loadPostAPI(lastId) { // 제네레이터 아님
 
 function* loadPost(action) {
     try {
-        const result = yield call(loadPostAPI, action.data);
+        const result = yield call(loadPostAPI, action.lastId);
         yield put({
             type: LOAD_POST_SUCCESS,
             data: result.data,

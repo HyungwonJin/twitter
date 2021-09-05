@@ -34,8 +34,10 @@ const Home = () => {
             // scrollY: 얼마나 내렸는지, clientHeight: 화면 보이는 길이, scrollHeight: 총 길이
             if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
                 if (hasMorePost && !loadPostLoading) {
+                    const lastId = mainPosts[mainPosts.length - 1]?.id;
                     dispatch({
                         type: LOAD_POST_REQUEST,
+                        lastId,
                     });
                 }
             }
@@ -44,7 +46,7 @@ const Home = () => {
         return () => {
             window.removeEventListener('scroll', onScroll); // removeEventListener해주지 않으면 메모리에 쌓여서 없애주어여함
         }
-    }, [hasMorePost, loadPostLoading])
+    }, [hasMorePost, loadPostLoading, mainPosts])
 
     return (
         <AppLayout>
