@@ -92,7 +92,7 @@ function* likePost(action) {
 }
 
 function addPostAPI(data) { // 제네레이터 아님
-    return axios.post('/post', { content: data });
+    return axios.post('/post', data);
 }
 
 function* addPost(action) {
