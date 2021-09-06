@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from "react-redux";
+import { END } from 'redux-saga';
 
 import AppLayout from "../components/AppLayout";
 import PostCard from "../components/PostCard";
 import PostForm from "../components/PostForm";
 import { LOAD_POST_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
+import wrapper from '../store/configureStore';
 
 
 const Home = () => {
@@ -18,15 +20,6 @@ const Home = () => {
             alert(retweetError)
         }
     }, [retweetError])
-
-    useEffect(() => {
-        dispatch({
-            type: LOAD_MY_INFO_REQUEST,
-        })
-        dispatch({
-            type: LOAD_POST_REQUEST,
-        });
-    }, []);
 
     useEffect(() => {
         function onScroll() {
@@ -55,5 +48,16 @@ const Home = () => {
         </AppLayout>
     )
 }
+
+export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req }) => { // 이 코드가 있으면 서버 쪽에서 SSR을 함
+    store.dispatch({
+        type: LOAD_MY_INFO_REQUEST,
+    });
+    store.dispatch({
+        type: LOAD_POST_REQUEST,
+    });
+    store.dispatch(END);
+    await store.sagaTask.toPromise();
+})
 
 export default Home;
