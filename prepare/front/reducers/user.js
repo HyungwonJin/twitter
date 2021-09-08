@@ -17,6 +17,10 @@ export const initialState = {
     loadUserDone: false,
     loadUserError: null,
 
+    loadMyInfoLoading: false, // 내 정보 가져오기 시도 중
+    loadMyInfoDone: false,
+    loadMyInfoError: null,
+
     followLoading: false, // 팔로우 시도 중
     followDone: false,
     followError: null,
@@ -42,8 +46,7 @@ export const initialState = {
     changeNicknameError: null,
 
     me: null,
-    signUpData: {},
-    loginData: {},
+    userInfo: null,
 };
 
 export const REMOVE_FOLLOWER_REQUEST = 'REMOVE_FOLLOWER_REQUEST';
@@ -61,6 +64,10 @@ export const LOAD_FOLLOWERS_FAILURE = 'LOAD_FOLLOWERS_FAILURE';
 export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST';
 export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
 export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
+
+export const LOAD_USER_REQUEST = 'LOAD_MY_INFO_REQUEST';
+export const LOAD_USER_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
+export const LOAD_USER_FAILURE = 'LOAD_MY_INFO_FAILURE';
 
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
@@ -156,18 +163,35 @@ const reducer = (state = initialState, action) => {
                 break;
 
             case LOAD_MY_INFO_REQUEST:
+                draft.loadMyInfoLoading = true;
+                draft.loadMyInfoError = null;
+                draft.loadMyInfoDone = false;
+                break;
+
+            case LOAD_MY_INFO_SUCCESS:
+                draft.loadMyInfoLoading = false;
+                draft.loadMyInfoDone = true;
+                draft.me = action.data;
+                break;
+
+            case LOAD_MY_INFO_FAILURE:
+                draft.loadMyInfoLoading = false;
+                draft.loadMyInfoError = action.error;
+                break;
+
+            case LOAD_USER_REQUEST:
                 draft.loadUserLoading = true;
                 draft.loadUserError = null;
                 draft.loadUserDone = false;
                 break;
 
-            case LOAD_MY_INFO_SUCCESS:
+            case LOAD_USER_SUCCESS:
                 draft.loadUserLoading = false;
                 draft.loadUserDone = true;
-                draft.me = action.data;
+                draft.userInfo = action.data;
                 break;
 
-            case LOAD_MY_INFO_FAILURE:
+            case LOAD_USER_FAILURE:
                 draft.loadUserLoading = false;
                 draft.loadUserError = action.error;
                 break;
