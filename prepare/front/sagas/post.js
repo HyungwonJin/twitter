@@ -14,9 +14,9 @@ import {
     REMOVE_POST_SUCCESS,
     REMOVE_POST_FAILURE,
 
-    LOAD_POST_REQUEST,
-    LOAD_POST_SUCCESS,
-    LOAD_POST_FAILURE,
+    LOAD_POSTS_REQUEST,
+    LOAD_POSTS_SUCCESS,
+    LOAD_POSTS_FAILURE,
 
     LIKE_POST_REQUEST,
     LIKE_POST_SUCCESS,
@@ -32,6 +32,9 @@ import {
     RETWEET_REQUEST,
     RETWEET_SUCCESS,
     RETWEET_FAILURE,
+    LOAD_POST_REQUEST,
+    LOAD_POST_SUCCESS,
+    LOAD_POST_FAILURE,
 } from '../reducers/post';
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
@@ -137,22 +140,43 @@ function* addPost(action) {
     }
 }
 
-function loadPostAPI(lastId) { // 제네레이터 아님
-    return axios.get(`/posts?lastId=${lastId}` || 0);
+function loadPostsAPI(lastId) {
+    return axios.get(`/posts?lastId=${lastId || 0}`);
+}
+
+function* loadPosts(action) {
+    try {
+        const result = yield call(loadPostsAPI, action.lastId);
+        yield put({
+            type: LOAD_POSTS_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: LOAD_POSTS_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
+function loadPostAPI(data) {
+    return axios.get(`/post/${data}`);
 }
 
 function* loadPost(action) {
     try {
-        const result = yield call(loadPostAPI, action.lastId);
+        const result = yield call(loadPostAPI, action.data);
         yield put({
             type: LOAD_POST_SUCCESS,
             data: result.data,
         });
     } catch (err) {
+        console.error(err);
         yield put({
             type: LOAD_POST_FAILURE,
             error: err.response.data,
-        })
+        });
     }
 }
 
@@ -221,8 +245,12 @@ function* watchAddPost() {
     yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 
+function* watchloadPosts() {
+    yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
+}
+
 function* watchloadPost() {
-    yield throttle(5000, LOAD_POST_REQUEST, loadPost);
+    yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
 
 function* watchRemovePost() {
@@ -240,6 +268,7 @@ export default function* postSaga() {
         fork(watchLikePost),
         fork(watchUnlikePost),
         fork(watchAddPost),
+        fork(watchloadPosts),
         fork(watchloadPost),
         fork(watchRemovePost),
         fork(watchAddComment),
